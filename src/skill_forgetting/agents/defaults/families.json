@@ -1,0 +1,92 @@
+{
+  "families": [
+    {
+      "family_id": "general_planning",
+      "short_name": "General Planning",
+      "description": "Break the task into subgoals, track progress, and avoid repeated failed actions.",
+      "keywords": ["plan", "subgoal", "track", "progress", "history"],
+      "structural_cues": ["multi-step", "stateful", "delayed goal"],
+      "type_aliases": ["alfworld_general", "search_navigation", "fact_lookup"],
+      "default_steps": ["identify the next bottleneck", "take the smallest action that unlocks progress", "update the state after each action"],
+      "default_failure_modes": ["looping", "forgetting completed subgoals"],
+      "priority": 1.0
+    },
+    {
+      "family_id": "general_tool_awareness",
+      "short_name": "Tool Awareness",
+      "description": "Use the available tool or action set deliberately and verify preconditions before acting.",
+      "keywords": ["tool", "action", "search", "click", "open", "take"],
+      "structural_cues": ["action space", "admissible actions", "environment constraints"],
+      "type_aliases": ["alfworld_general", "search_navigation", "purchase"],
+      "default_steps": ["inspect admissible actions", "choose the action with the best information gain", "check whether the action changed the state as expected"],
+      "default_failure_modes": ["invalid action", "acting without prerequisites"],
+      "priority": 0.9
+    },
+    {
+      "family_id": "pick_and_place",
+      "short_name": "ALFWorld Pick and Place",
+      "description": "Find target objects, locate destination containers, and move objects efficiently.",
+      "keywords": ["put", "place", "find", "safe", "cabinet", "fork"],
+      "structural_cues": ["embodied navigation", "object transport"],
+      "type_aliases": ["pick_and_place"],
+      "default_steps": ["locate the destination early", "search likely object locations systematically", "return directly once the destination is known"],
+      "default_failure_modes": ["wandering after finding the object", "forgetting destination location"],
+      "priority": 0.95
+    },
+    {
+      "family_id": "clean_heat_cool",
+      "short_name": "ALFWorld State Change",
+      "description": "Use the correct appliance or interaction sequence to clean, heat, or cool an object before delivery.",
+      "keywords": ["clean", "heat", "cool", "fridge", "microwave", "sink"],
+      "structural_cues": ["state transition", "tool precondition", "object processing"],
+      "type_aliases": ["clean", "heat", "cool"],
+      "default_steps": ["identify the required state change", "prepare the appliance before fetching the object", "confirm the object state before delivery"],
+      "default_failure_modes": ["using the wrong appliance", "moving to destination before state change completes"],
+      "priority": 0.95
+    },
+    {
+      "family_id": "search_navigation",
+      "short_name": "WebShop Navigation",
+      "description": "Use search, filters, and pagination to narrow candidates quickly before inspecting details.",
+      "keywords": ["search", "filter", "sort", "page", "candidate"],
+      "structural_cues": ["web navigation", "candidate pruning"],
+      "type_aliases": ["search_navigation", "filter"],
+      "default_steps": ["extract hard constraints from the user request", "use search or filtering to reduce the candidate set", "inspect details only after pruning"],
+      "default_failure_modes": ["opening too many irrelevant products", "forgetting the original constraints"],
+      "priority": 0.9
+    },
+    {
+      "family_id": "compare_and_purchase",
+      "short_name": "WebShop Comparison",
+      "description": "Compare shortlisted products against the user constraints and only purchase after verifying all critical attributes.",
+      "keywords": ["compare", "price", "rating", "buy", "attribute"],
+      "structural_cues": ["attribute matching", "decision under constraints"],
+      "type_aliases": ["compare", "purchase", "attribute_matching"],
+      "default_steps": ["write down the must-have attributes", "compare candidates attribute by attribute", "purchase only after the best match is confirmed"],
+      "default_failure_modes": ["purchasing early", "ignoring a hard requirement"],
+      "priority": 0.92
+    },
+    {
+      "family_id": "multi_hop_reasoning",
+      "short_name": "Search Multi-hop QA",
+      "description": "Decompose the question into evidence needs, search iteratively, and verify support before answering.",
+      "keywords": ["evidence", "verify", "support", "multi-hop", "question"],
+      "structural_cues": ["open-domain QA", "multi-hop retrieval", "fact composition"],
+      "type_aliases": ["multi_hop_reasoning", "comparison", "verification", "fact_lookup"],
+      "default_steps": ["split the question into subclaims", "retrieve evidence for each subclaim", "cross-check the combined evidence before answering"],
+      "default_failure_modes": ["answering from one snippet", "confusing entities with similar names"],
+      "priority": 0.94
+    },
+    {
+      "family_id": "mistake_recovery",
+      "short_name": "Mistake Recovery",
+      "description": "Detect repeated failed behaviors and switch strategies before the trajectory stalls.",
+      "keywords": ["repeat", "stuck", "retry", "alternative"],
+      "structural_cues": ["repeated failures", "trajectory stagnation"],
+      "type_aliases": ["mistake_recovery"],
+      "default_steps": ["notice repetition", "identify the failed assumption", "try a different branch or tool"],
+      "default_failure_modes": ["blind retry", "state not updated after failure"],
+      "priority": 0.85
+    }
+  ]
+}

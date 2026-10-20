@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "skill-forgetting"
+version = "0.1.0"
+description = "Skill memory and skill-augmented continual learning for math and agents"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["numpy", "sentence-transformers", "datasets"]
+
+[project.optional-dependencies]
+inference = ["vllm", "transformers"]
+rl = ["verl @ git+https://github.com/verl-project/verl.git@6058aaa5a2d6a9713c5777e10ac3f014756eddf2", "vllm", "transformers"]
+sft = ["llamafactory"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"skill_forgetting.math" = ["defaults/*.json", "defaults/*.jsonl"]
+"skill_forgetting.agents" = ["defaults/*.json", "defaults/*.jsonl"]

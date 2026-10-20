@@ -1,0 +1,142 @@
+# Skill Forgetting
+
+Skill-augmented continual learning for math reasoning and agent tasks.
+The implementation extracts reusable skills from training solutions, stores and
+updates them in a shared memory, retrieves relevant skills by embedding similarity,
+and adds them to prompts for sequential SFT or GRPO.
+
+## Layout
+
+```text
+src/skill_forgetting/
+  memory/    Skill schema, persistence, extraction, updates, retrieval, prompts
+  math/      Math data preparation, seed skills, augmentation, reward, evaluation
+  agents/    Agent data preparation, seed skills, augmentation, reward, evaluation
+  training/  Sequential LlamaFactory SFT and VERL GRPO launchers
+tests/       CPU checks for the core pipeline and training orchestration
+```
+
+Only implementation code and hand-written seed skill definitions are included.
+Datasets, extracted memories, model weights, results, plots, baseline methods,
+cluster submission scripts, and third-party source trees are excluded.
+`train_raw.jsonl` names refer to input records used for skill extraction, not a
+baseline training mode.
+
+## Setup
+
+Use Python 3.10+ and install the package from this directory:
+
+```bash
+python -m pip install -e .
+```
+
+Extraction and evaluation additionally need vLLM and Transformers. SFT uses an
+external LlamaFactory installation; GRPO uses an external VERL installation with
+FSDP and vLLM. Optional dependency groups are `inference`, `sft`, and `rl`, for
+example `python -m pip install -e '.[inference]'`. Install training frameworks in
+environments appropriate for your CUDA version.
+
+The source environment used Transformers 4.57.3, vLLM 0.19.0,
+Sentence Transformers 5.3.0, Datasets 4.0.0, and LlamaFactory 0.9.5.dev0.
+The `rl` extra pins VERL to source commit
+`6058aaa5a2d6a9713c5777e10ac3f014756eddf2` (0.8.0.dev0), matching the
+configuration schema used by the launchers.
+These are provenance notes, not a tested dependency lock. The cleaned package
+has CPU tests; full GPU training has not been rerun after the reorganization.
+
+Retrieval defaults to `BAAI/bge-small-en-v1.5`. Set `SKILL_EMBEDDING_MODEL` to a
+model ID or local directory to change it. Model access and downloads use your
+normal Hugging Face configuration.
+
+## Math SFT
+
+Run from the repository root. Each command writes generated files under `data/`
+or `runs/`, both ignored by Git.
+
+```bash
+python -m skill_forgetting.math.download --source hendrycks_math
+python -m skill_forgetting.math.prepare --run_root runs/math \
+  --by_type_dir data/hendrycks_math_splits
+python -m skill_forgetting.math.build_memory --run_root runs/math \
+  --extractor_model Qwen/Qwen2.5-3B-Instruct
+python -m skill_forgetting.math.augment --run_root runs/math --top_k_skills 2
+python -m skill_forgetting.training.sft --run_root runs/math \
+  --model Qwen/Qwen2.5-3B-Instruct --template qwen
+```
+
+The training order is algebra → counting/probability → geometry → intermediate
+algebra. Evaluation also includes number theory, prealgebra, and precalculus.
+Native train/test splits are preserved; memory extraction reads training data
+only. The existing protocol builds memory across all four training domains
+before sequential model training; it is not a strict unseen-future-domain
+memory protocol.
+
+Use `--finetuning_type lora --learning_rate 1e-4` for LoRA. Adapters are merged
+after each stage before training the next one. Choose the matching LlamaFactory
+`--template` when changing model families.
+
+```bash
+python -m skill_forgetting.math.evaluate \
+  --model runs/math/checkpoints/step_04_intermediate_algebra \
+  --input_jsonl runs/math/per_type_data_with_raw/algebra/test_raw.jsonl \
+  --output_jsonl runs/math/eval/algebra.jsonl \
+  --skill_memory_dir runs/math/memory --top_k_skills 2
+```
+
+Omit `--skill_memory_dir` to evaluate the trained model without test-time
+retrieval. Predictions contain the gold solution for scoring with
+`skill_forgetting.memory.utils.compare_answers`.
+
+## Agent GRPO
+
+Agent data comes from `Jianwen/SkillRL-SFT-Data`. Preparation removes existing
+retrieved-experience blocks before adding this implementation's retrieved skills.
+
+```bash
+python -m skill_forgetting.agents.prepare --run_root runs/agents
+python -m skill_forgetting.agents.build_memory --run_root runs/agents \
+  --extractor_model Qwen/Qwen2.5-3B-Instruct
+python -m skill_forgetting.agents.augment --run_root runs/agents --top_k_skills 4
+python -m skill_forgetting.agents.build_grpo_data --run_root runs/agents
+python -m skill_forgetting.training.grpo --domain agents --run_root runs/agents \
+  --model Qwen/Qwen2.5-3B-Instruct
+```
+
+The sequence is ALFWorld → WebShop → Search. GRPO uses fixed trajectory prompts
+and local action/format rewards; it does not interact with live environments.
+As with math, skill memory is built from all training environments before
+sequential model training.
+For faster extraction, `agents.build_memory_batched` accepts `--run_root`,
+`--raw_run_root`, and `--batch_size`.
+
+```bash
+python -m skill_forgetting.agents.evaluate \
+  --model runs/agents/checkpoints/step_03_search/merged \
+  --input_jsonl runs/agents/agent_sft_skill_augmented/alfworld/skillrl_eval.jsonl \
+  --output_jsonl runs/agents/eval/alfworld.jsonl
+```
+
+## Math GRPO
+
+Complete math preparation, memory extraction, and augmentation above, then:
+
+```bash
+python -m skill_forgetting.math.build_grpo_data --run_root runs/math
+python -m skill_forgetting.training.grpo --domain math --run_root runs/math \
+  --model Qwen/Qwen2.5-3B-Instruct
+```
+
+GRPO chains each stage's merged FSDP checkpoint into the next. Both training
+entry points support `--dry_run` to inspect commands without loading models.
+GRPO accepts repeated `--override KEY=VALUE` arguments for VERL settings.
+Use a fresh run directory for each training run; launchers refuse to overwrite
+existing checkpoints.
+
+## Checks
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+Tests use synthetic examples and deterministic embeddings, with no model
+downloads or GPU allocation.

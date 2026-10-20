@@ -1,0 +1,100 @@
+{
+  "families": [
+    {
+      "family_id": "exact_form_and_answer_realization",
+      "short_name": "Exact Form And Answer Realization",
+      "description": "Produce the mathematically correct final form and state it explicitly in the requested answer format.",
+      "keywords": ["final answer", "express", "simplest", "common fraction", "interval", "radical"],
+      "structural_cues": [],
+      "output_format_cues": ["fraction", "radical", "interval", "integer", "coordinate", "pi_expression"],
+      "type_aliases": [],
+      "default_steps": ["solve the main math subproblem", "convert to the requested final form", "state Final Answer explicitly"],
+      "default_failure_modes": ["missing explicit final answer", "format mismatch", "unsimplified expression"],
+      "priority": 0.2
+    },
+    {
+      "family_id": "algebraic_equation_and_expression_manipulation",
+      "short_name": "Algebraic Equation And Expression Manipulation",
+      "description": "Solve equations and simplify algebraic expressions through substitution, factoring, and symbolic manipulation.",
+      "keywords": ["equation", "solve", "factor", "substitute", "expression", "root"],
+      "structural_cues": ["functional relation", "inequality or interval"],
+      "output_format_cues": ["integer", "fraction", "radical", "interval"],
+      "type_aliases": ["algebra", "prealgebra", "intermediate algebra"],
+      "default_steps": ["rewrite the relation into a solvable form", "apply substitution or factoring", "check candidate solutions"],
+      "default_failure_modes": ["sign error", "dropped solution branch", "algebraic simplification mistake"],
+      "priority": 0.8
+    },
+    {
+      "family_id": "counting_casework_and_probability",
+      "short_name": "Counting Casework And Probability",
+      "description": "Solve combinatorics and probability problems by partitioning cases and counting valid outcomes precisely.",
+      "keywords": ["probability", "choose", "arrange", "permutation", "combination", "ways"],
+      "structural_cues": ["casework counting", "finite integer enumeration"],
+      "output_format_cues": ["fraction", "integer"],
+      "type_aliases": ["counting", "probability"],
+      "default_steps": ["define the sample space or counting target", "split into exhaustive cases", "sum or divide correctly"],
+      "default_failure_modes": ["double counting", "missing case", "incorrect denominator"],
+      "priority": 0.8
+    },
+    {
+      "family_id": "geometry_configuration_and_measure_chasing",
+      "short_name": "Geometry Configuration And Measure Chasing",
+      "description": "Use geometric structure, angle chasing, and length or area relations to solve configuration problems.",
+      "keywords": ["triangle", "circle", "angle", "tangent", "chord", "arc", "area"],
+      "structural_cues": ["geometry configuration", "extremal objective"],
+      "output_format_cues": ["degrees", "radical", "pi_expression", "integer"],
+      "type_aliases": ["geometry"],
+      "default_steps": ["identify the key geometric relations", "introduce the right theorem or auxiliary quantity", "solve for the requested measure"],
+      "default_failure_modes": ["used the wrong theorem", "missed a hidden similar triangle", "incorrect arc-angle relation"],
+      "priority": 0.8
+    },
+    {
+      "family_id": "integer_divisibility_and_modular_reasoning",
+      "short_name": "Integer Divisibility And Modular Reasoning",
+      "description": "Solve digit, divisibility, remainder, and modular arithmetic problems using exact discrete reasoning.",
+      "keywords": ["integer", "digit", "divisible", "remainder", "mod", "factor"],
+      "structural_cues": ["construct a number", "sum of remainders", "finite integer enumeration", "divisibility constraint"],
+      "output_format_cues": ["integer", "remainder"],
+      "type_aliases": ["number theory", "prealgebra"],
+      "default_steps": ["extract integer constraints", "apply divisibility or modular rules", "enumerate valid cases", "produce the final count or residue"],
+      "default_failure_modes": ["incomplete case analysis", "incorrect divisibility reasoning", "missing explicit final answer"],
+      "priority": 0.85
+    },
+    {
+      "family_id": "functional_polynomial_and_sequence_reasoning",
+      "short_name": "Functional Polynomial And Sequence Reasoning",
+      "description": "Analyze functions, polynomials, recurrences, and sequences by exploiting structure and invariants.",
+      "keywords": ["function", "polynomial", "sequence", "recurrence", "root", "coefficient"],
+      "structural_cues": ["functional relation", "extremal objective"],
+      "output_format_cues": ["integer", "fraction", "coordinate"],
+      "type_aliases": ["precalculus", "intermediate algebra", "algebra"],
+      "default_steps": ["identify the structural relation", "rewrite with a useful substitution or invariant", "evaluate the requested quantity"],
+      "default_failure_modes": ["missed polynomial identity", "wrong recurrence expansion", "ignored domain restriction"],
+      "priority": 0.7
+    },
+    {
+      "family_id": "coordinate_and_analytic_modeling",
+      "short_name": "Coordinate And Analytic Modeling",
+      "description": "Translate the problem into coordinates, equations, or analytic models and solve symbolically.",
+      "keywords": ["coordinate", "slope", "distance", "equation of", "line", "graph", "ellipse"],
+      "structural_cues": ["analytic geometry", "functional relation"],
+      "output_format_cues": ["coordinate", "fraction", "radical"],
+      "type_aliases": ["geometry", "algebra", "precalculus"],
+      "default_steps": ["choose a coordinate or analytic representation", "derive the governing equations", "solve and back-interpret"],
+      "default_failure_modes": ["bad coordinate setup", "algebra error after modeling", "forgot geometric interpretation"],
+      "priority": 0.7
+    },
+    {
+      "family_id": "inequality_extremal_and_interval_reasoning",
+      "short_name": "Inequality Extremal And Interval Reasoning",
+      "description": "Handle inequalities, optimization, interval conditions, and sign analysis with careful boundary reasoning.",
+      "keywords": ["maximum", "minimum", "least", "greatest", "nonnegative", "interval"],
+      "structural_cues": ["extremal objective", "inequality or interval"],
+      "output_format_cues": ["interval", "integer", "fraction"],
+      "type_aliases": ["intermediate algebra", "algebra", "precalculus"],
+      "default_steps": ["identify the objective or sign condition", "analyze critical points or intervals", "check endpoints and constraints"],
+      "default_failure_modes": ["missed endpoint case", "incorrect sign chart", "optimized the wrong quantity"],
+      "priority": 0.75
+    }
+  ]
+}
