@@ -1,5 +1,9 @@
 # Skill Forgetting
 
+Implementation of **Combating Catastrophic Forgetting in Continual Domain Adaptation via Knowledge Recasting**.
+
+**Accepted at NeurIPS 2026.**
+
 Skill-augmented continual learning for math reasoning and agent tasks.
 The implementation extracts reusable skills from training solutions, stores and
 updates them in a shared memory, retrieves relevant skills by embedding similarity,
