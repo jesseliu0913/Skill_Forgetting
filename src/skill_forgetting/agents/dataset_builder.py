@@ -16,7 +16,7 @@ DEFAULT_SFT_INSTRUCTION = (
 
 
 def strip_retrieved_experience(instruction: str) -> str:
-    """Remove pre-existing retrieval blocks before adding our retrieved skills."""
+    """Remove existing retrieval blocks before inserting retrieved skills."""
     text = instruction.strip()
     marker = "\n\n## Retrieved Relevant Experience\n"
     start = text.find(marker)

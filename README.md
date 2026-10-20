@@ -26,9 +26,6 @@ src/skill_forgetting/
 tests/       CPU checks for the core pipeline and training orchestration
 ```
 
-The repository contains the implementation and seed skill definitions.
-Datasets and generated artifacts are stored separately.
-
 ## Setup
 
 Use Python 3.10+ and install the package from this directory:
@@ -64,8 +61,8 @@ Dataset licenses and usage details are available on the linked HF pages.
 
 ## Math SFT
 
-Run from the repository root. Each command writes generated files under `data/`
-or `runs/`, both ignored by Git.
+Run from the repository root. Commands write prepared data and training
+artifacts under `data/` and `runs/`.
 
 ```bash
 python -m skill_forgetting.math.download --source hendrycks_math
@@ -142,12 +139,11 @@ GRPO accepts repeated `--override KEY=VALUE` arguments for VERL settings.
 Use a fresh run directory for each training run; launchers refuse to overwrite
 existing checkpoints.
 
-## Checks
+## Tests
 
 ```bash
 python -m unittest discover -s tests -v
 ```
 
-Tests cover the core pipeline and training orchestration using synthetic examples
-and deterministic embeddings. They do not require model downloads or GPUs and
-do not run end-to-end GPU training.
+Tests cover the core pipeline and training orchestration on CPU using synthetic
+examples and deterministic embeddings.
