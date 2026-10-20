@@ -9,6 +9,12 @@ The implementation extracts reusable skills from training solutions, stores and
 updates them in a shared memory, retrieves relevant skills by embedding similarity,
 and adds them to prompts for sequential SFT or GRPO.
 
+![Overview of Skill Schema Transport (SST), showing skill extraction, abstraction, memory, and schema-conditioned updates.](assets/sst-overview.png)
+
+**Figure 1. Overview of Skill Schema Transport (SST).** SST recasts new-domain
+examples as instances of reusable skill schemas. The pipeline extracts, abstracts,
+and stores procedural skills for schema-conditioned updates.
+
 ## Layout
 
 ```text
