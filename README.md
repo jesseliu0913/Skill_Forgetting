@@ -48,6 +48,19 @@ Retrieval defaults to `BAAI/bge-small-en-v1.5`. Set `SKILL_EMBEDDING_MODEL` to a
 model ID or local directory to change it. Model access and downloads use your
 normal Hugging Face configuration.
 
+## Data
+
+| Data | Hugging Face | Preparation |
+| --- | --- | --- |
+| MATH (native train/test splits; default) | [EleutherAI/hendrycks_math](https://huggingface.co/datasets/EleutherAI/hendrycks_math) | `python -m skill_forgetting.math.download --source hendrycks_math` |
+| Competition MATH (alternative) | [qwedsacf/competition_math](https://huggingface.co/datasets/qwedsacf/competition_math) | `python -m skill_forgetting.math.download --source competition_math` |
+| ALFWorld / WebShop / Search | [Jianwen/SkillRL-SFT-Data](https://huggingface.co/datasets/Jianwen/SkillRL-SFT-Data) | `python -m skill_forgetting.agents.prepare --run_root runs/agents` |
+
+The commands download and prepare data locally. For the alternative math dataset,
+pass `--by_type_dir data/competition_math_splits/train/by_type` to
+`skill_forgetting.math.prepare`; it creates a seeded train/test split.
+Dataset licenses and usage details are available on the linked HF pages.
+
 ## Math SFT
 
 Run from the repository root. Each command writes generated files under `data/`
@@ -88,9 +101,6 @@ retrieval. Predictions contain the gold solution for scoring with
 `skill_forgetting.memory.utils.compare_answers`.
 
 ## Agent GRPO
-
-Agent data comes from `Jianwen/SkillRL-SFT-Data`. Preparation removes existing
-retrieved-experience blocks before adding this implementation's retrieved skills.
 
 ```bash
 python -m skill_forgetting.agents.prepare --run_root runs/agents
