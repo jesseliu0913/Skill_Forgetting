@@ -20,11 +20,8 @@ src/skill_forgetting/
 tests/       CPU checks for the core pipeline and training orchestration
 ```
 
-Only implementation code and hand-written seed skill definitions are included.
-Datasets, extracted memories, model weights, results, plots, baseline methods,
-cluster submission scripts, and third-party source trees are excluded.
-`train_raw.jsonl` names refer to input records used for skill extraction, not a
-baseline training mode.
+The repository contains the implementation and seed skill definitions.
+Datasets and generated artifacts are stored separately.
 
 ## Setup
 
@@ -40,13 +37,7 @@ FSDP and vLLM. Optional dependency groups are `inference`, `sft`, and `rl`, for
 example `python -m pip install -e '.[inference]'`. Install training frameworks in
 environments appropriate for your CUDA version.
 
-The source environment used Transformers 4.57.3, vLLM 0.19.0,
-Sentence Transformers 5.3.0, Datasets 4.0.0, and LlamaFactory 0.9.5.dev0.
-The `rl` extra pins VERL to source commit
-`6058aaa5a2d6a9713c5777e10ac3f014756eddf2` (0.8.0.dev0), matching the
-configuration schema used by the launchers.
-These are provenance notes, not a tested dependency lock. The cleaned package
-has CPU tests; full GPU training has not been rerun after the reorganization.
+The GRPO dependency group uses VERL 0.8.0.
 
 Retrieval defaults to `BAAI/bge-small-en-v1.5`. Set `SKILL_EMBEDDING_MODEL` to a
 model ID or local directory to change it. Model access and downloads use your
@@ -84,9 +75,8 @@ python -m skill_forgetting.training.sft --run_root runs/math \
 The training order is algebra → counting/probability → geometry → intermediate
 algebra. Evaluation also includes number theory, prealgebra, and precalculus.
 Native train/test splits are preserved; memory extraction reads training data
-only. The existing protocol builds memory across all four training domains
-before sequential model training; it is not a strict unseen-future-domain
-memory protocol.
+only. Skill memory is built across all four training domains before sequential
+model training.
 
 Use `--finetuning_type lora --learning_rate 1e-4` for LoRA. Adapters are merged
 after each stage before training the next one. Choose the matching LlamaFactory
@@ -152,5 +142,6 @@ existing checkpoints.
 python -m unittest discover -s tests -v
 ```
 
-Tests use synthetic examples and deterministic embeddings, with no model
-downloads or GPU allocation.
+Tests cover the core pipeline and training orchestration using synthetic examples
+and deterministic embeddings. They do not require model downloads or GPUs and
+do not run end-to-end GPU training.

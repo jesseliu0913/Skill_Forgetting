@@ -12,7 +12,7 @@ dependencies = ["numpy", "sentence-transformers", "datasets"]
 
 [project.optional-dependencies]
 inference = ["vllm", "transformers"]
-rl = ["verl @ git+https://github.com/verl-project/verl.git@6058aaa5a2d6a9713c5777e10ac3f014756eddf2", "vllm", "transformers"]
+rl = ["verl==0.8.0", "vllm", "transformers"]
 sft = ["llamafactory"]
 
 [tool.setuptools.packages.find]
